@@ -11,4 +11,5 @@
     <string name="sign_up_email_text">Email</string>
     <string name="sign_up_second_password_text">Confirm password</string>
     <string name="sign_up_confirm_text">Sign Up</string>
+    <string name="sign_up_name_user">Name</string>
 </resources>
