@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">HappyDays</string>
+    <string name="facebook_app_id">1486630454961586</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -12,4 +13,5 @@
     <string name="sign_up_second_password_text">Confirm password</string>
     <string name="sign_up_confirm_text">Sign Up</string>
     <string name="sign_up_name_user">Name</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
