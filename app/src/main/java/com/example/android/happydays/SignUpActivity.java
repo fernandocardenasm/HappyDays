@@ -1,5 +1,6 @@
 package com.example.android.happydays;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -25,7 +26,6 @@ public class SignUpActivity extends ActionBarActivity {
     public static final String TAG = SignUpActivity.class.getSimpleName();
 
     @InjectView(R.id.nameText) EditText mName;
-    @InjectView(R.id.usernameText) EditText mUsername;
     @InjectView(R.id.emailText) EditText mEmail;
     @InjectView(R.id.passwordText) EditText mPassword;
     @InjectView(R.id.passwordTextConfirm) EditText mPasswordConfirm;
@@ -44,14 +44,13 @@ public class SignUpActivity extends ActionBarActivity {
     @OnClick(R.id.signUpButton) void submitUserForm(){
 
         String name = mName.getText().toString();
-        String username = mUsername.getText().toString().trim();
         String email = mEmail.getText().toString().trim();
         String passw = mPassword.getText().toString().trim();
         String passwConfirm = mPasswordConfirm.getText().toString().trim();
 
         AlertDialogGenerator dialog = new AlertDialogGenerator();
 
-        if (name.trim().isEmpty() || username.isEmpty() || email.isEmpty() || passw.isEmpty() || passwConfirm.isEmpty()){
+        if (name.trim().isEmpty() || email.isEmpty() || passw.isEmpty() || passwConfirm.isEmpty()){
             dialog.showAlertDialog(SignUpActivity.this, "Please make sure you entered an username, email and password.", "Opps");
         }
         else if(!passw.equals(passwConfirm)){
@@ -62,18 +61,18 @@ public class SignUpActivity extends ActionBarActivity {
         }
         else{
             mProgressBar.setVisibility(View.VISIBLE);
-            signUpUser(name, username, email, passw);
+            signUpUser(name, email, passw);
         }
 
     }
 
     //Create the User in the Parse Database
-    protected void signUpUser(String name, String username, String email, String passw){
+    protected void signUpUser(String name, String email, String passw){
         //Create the parse user
         ParseUser user = new ParseUser();
 
         //Set core properties
-        user.setUsername(username);
+        user.setUsername(email);
         user.setEmail(email);
         user.setPassword(passw);
 
@@ -85,9 +84,11 @@ public class SignUpActivity extends ActionBarActivity {
                 mProgressBar.setVisibility(View.INVISIBLE);
                 if (e==null){
                     Log.v(TAG, "Si");
+                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
                 else{
-                    Log.v(TAG, "No");
+                    Log.v(TAG, "No: " + e);
                 }
             }
         });

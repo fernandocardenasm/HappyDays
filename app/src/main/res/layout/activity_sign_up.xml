@@ -58,12 +58,6 @@
             android:hint="@string/sign_up_name_user"
             android:layout_gravity="center_horizontal"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/usernameText"
-            android:hint="@string/login_username"
-            android:layout_gravity="center_horizontal"/>
 
         <EditText
             android:layout_width="match_parent"
