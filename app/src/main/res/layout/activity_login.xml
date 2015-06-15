@@ -54,9 +54,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/usernameText"
-            android:hint="Email"
-            android:layout_gravity="center_horizontal"/>
+            android:id="@+id/emailText"
+            android:hint="@string/login_email_text"
+            android:layout_gravity="center_horizontal"
+            android:inputType="textEmailAddress"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -90,6 +91,13 @@
         android:text="Sign Up"
         android:id="@+id/signUpButton"
         android:layout_below="@+id/newAccountText"
+        android:layout_centerHorizontal="true"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
 
 

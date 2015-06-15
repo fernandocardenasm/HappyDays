@@ -3,6 +3,8 @@ package com.example.android.happydays;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseInstallation;
+import com.parse.ParseUser;
 
 /**
  * Created by usuario on 15/06/2015.
@@ -22,5 +24,11 @@ public class HappyDaysApplication extends Application {
         testObject.saveInBackground();
         */
 
+    }
+
+    public static void updateParseInstallation(ParseUser user){
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put(ParseConstants.KEY_USER_ID, user.getObjectId());
+        installation.saveInBackground();
     }
 }

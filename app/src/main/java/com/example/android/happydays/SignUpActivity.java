@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -54,7 +52,7 @@ public class SignUpActivity extends ActionBarActivity {
             dialog.showAlertDialog(SignUpActivity.this, "Please make sure you entered an username, email and password.", "Opps");
         }
         else if(!passw.equals(passwConfirm)){
-            dialog.showAlertDialog(SignUpActivity.this, "Both Passwords must be equal.", "Opps");
+            dialog.showAlertDialog(SignUpActivity.this, "Both Passwords must be equal.", getString(R.string.error_title));
         }
         else if(!isEmailValid(email)){
             dialog.showAlertDialog(SignUpActivity.this, "The email is not valid.", "Opps");
@@ -85,6 +83,8 @@ public class SignUpActivity extends ActionBarActivity {
                 if (e==null){
                     Log.v(TAG, "Si");
                     Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
                 else{
@@ -98,27 +98,5 @@ public class SignUpActivity extends ActionBarActivity {
         if (email == null)
             return false;
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

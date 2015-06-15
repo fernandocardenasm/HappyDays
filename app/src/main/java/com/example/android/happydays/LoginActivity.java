@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -14,12 +17,16 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import org.json.JSONObject;
 
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 
@@ -30,12 +37,17 @@ public class LoginActivity extends Activity {
     protected LoginButton mFacebookButton;
     protected CallbackManager mCallbackManager;
 
+    @InjectView(R.id.emailText) EditText mEmailText;
+    @InjectView(R.id.passwordText) EditText mPasswordText;
+    @InjectView(R.id.progressBar) ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
+        mProgressBar.setVisibility(View.INVISIBLE);
         mFacebookButton = (LoginButton) findViewById(R.id.loginFacebookButton);
         mFacebookButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday"));
 
@@ -55,6 +67,10 @@ public class LoginActivity extends Activity {
                                             JSONObject object,
                                             GraphResponse response) {
                                         // Application code
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
                                         Log.v(TAG, response.toString());
                                     }
                                 });
@@ -63,8 +79,6 @@ public class LoginActivity extends Activity {
                         request.setParameters(parameters);
                         request.executeAsync();
 
-                        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        //startActivity(intent);
                         Log.d(TAG, "Success: ");
 
                     }
@@ -81,6 +95,7 @@ public class LoginActivity extends Activity {
                 });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -90,5 +105,48 @@ public class LoginActivity extends Activity {
     @OnClick(R.id.signUpButton) void goToSignUpActivity(){
         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
         startActivity(intent);
+    }
+
+    //Trigger when login button is pressed.
+    @OnClick(R.id.loginButton) void submit(){
+        String email = mEmailText.getText().toString().trim();
+        String password = mPasswordText.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()){
+            AlertDialogGenerator dialog = new AlertDialogGenerator();
+            dialog.showAlertDialog(LoginActivity.this, getString(R.string.login_error_message), getString(R.string.error_title));
+        }
+        else{
+            mProgressBar.setVisibility(View.VISIBLE);
+            loginUser(email, password);
+        }
+    }
+
+    private void loginUser(String username, String password) {
+        //Log in
+
+        //mLoginProgressBar.setVisibility(View.VISIBLE);
+
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                //mLoginProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.INVISIBLE);
+                if (e == null) {
+                    //Update Parse Installation}
+                    HappyDaysApplication.updateParseInstallation(ParseUser.getCurrentUser());
+
+                    //Success
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    AlertDialogGenerator dialog = new AlertDialogGenerator();
+                    dialog.showAlertDialog(LoginActivity.this, e.getMessage(), getString(R.string.error_title));
+                }
+            }
+        });
+
     }
 }

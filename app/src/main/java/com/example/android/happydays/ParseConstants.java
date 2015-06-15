@@ -7,4 +7,5 @@ public final class ParseConstants {
 
     //Field Names
     public static final String KEY_NAME = "name";
+    public static final String KEY_USER_ID = "userId";
 }
