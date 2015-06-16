@@ -70,6 +70,8 @@ public class LoginActivity extends Activity {
                                         // Application code
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         try {
+                                            intent.putExtra("LOGIN_CHOICE",MainActivity.LOGIN_CHOICE_FACEBOOK);
+
                                             intent.putExtra(FaceBookConstants.USER_KEY_ID,object.get(FaceBookConstants.USER_KEY_ID).toString());
                                             intent.putExtra(FaceBookConstants.USER_KEY_NAME,object.get(FaceBookConstants.USER_KEY_NAME).toString());
                                             intent.putExtra(FaceBookConstants.USER_KEY_GENDER,object.get(FaceBookConstants.USER_KEY_GENDER).toString());
@@ -161,6 +163,7 @@ public class LoginActivity extends Activity {
 
                     //Success
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("LOGIN_CHOICE",MainActivity.LOGIN_CHOICE_PARSE);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

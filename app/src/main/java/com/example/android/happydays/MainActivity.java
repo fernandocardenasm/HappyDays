@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.parse.ParseUser;
 
 
@@ -26,21 +28,23 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         //Check if the User is login by using FB or ParseUser
-        if (AccessToken.getCurrentAccessToken()!=null){
-            Log.d(TAG, "Connected with FB.");
+        if (AccessToken.getCurrentAccessToken()!=null && Profile.getCurrentProfile()!=null){
             mLoginChoice = LOGIN_CHOICE_FACEBOOK;
-            Intent intent = getIntent();
+            Log.d(TAG, "Login with Facebook.");
         }
         else{
             ParseUser currentUser = ParseUser.getCurrentUser();
-
             if (currentUser == null){
                 navigateToLogin();
             }
@@ -50,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,7 +72,17 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
-            ParseUser.logOut();
+            Log.d(TAG, "Mlogin:"+mLoginChoice);
+            Log.d(TAG, "FB: " + LOGIN_CHOICE_FACEBOOK);
+            Log.d(TAG, "Parse: " + LOGIN_CHOICE_PARSE);
+            if (mLoginChoice.equals(LOGIN_CHOICE_FACEBOOK)){
+                LoginManager.getInstance().logOut();
+                Log.d(TAG, "Logout with FB");
+            }
+            else if (mLoginChoice.equals(LOGIN_CHOICE_PARSE)){
+                ParseUser.logOut();
+                Log.d(TAG, "Logout with Parse");
+            }
             navigateToLogin();
         }
 
