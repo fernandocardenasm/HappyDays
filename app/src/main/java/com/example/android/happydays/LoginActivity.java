@@ -21,6 +21,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -68,6 +69,23 @@ public class LoginActivity extends Activity {
                                             GraphResponse response) {
                                         // Application code
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        try {
+                                            intent.putExtra(FaceBookConstants.USER_KEY_ID,object.get(FaceBookConstants.USER_KEY_ID).toString());
+                                            intent.putExtra(FaceBookConstants.USER_KEY_NAME,object.get(FaceBookConstants.USER_KEY_NAME).toString());
+                                            intent.putExtra(FaceBookConstants.USER_KEY_GENDER,object.get(FaceBookConstants.USER_KEY_GENDER).toString());
+                                            intent.putExtra(FaceBookConstants.USER_KEY_BIRTHDAY,object.get(FaceBookConstants.USER_KEY_BIRTHDAY).toString());
+
+                                            if (object.get(FaceBookConstants.USER_KEY_EMAIL).toString()==null){
+                                                intent.putExtra(FaceBookConstants.USER_KEY_EMAIL,object.get("empty").toString());
+                                            }
+                                            else{
+                                                intent.putExtra(FaceBookConstants.USER_KEY_EMAIL,object.get(FaceBookConstants.USER_KEY_EMAIL).toString());
+                                            }
+
+                                            Log.d(TAG,"Id:"+object.get("id").toString());
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
@@ -75,7 +93,12 @@ public class LoginActivity extends Activity {
                                     }
                                 });
                         Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,name,email,gender, birthday");
+                        parameters.putString(FaceBookConstants.USER_KEY_FIELDS,
+                                FaceBookConstants.USER_KEY_ID+","+
+                                FaceBookConstants.USER_KEY_NAME+","+
+                                FaceBookConstants.USER_KEY_EMAIL+","+
+                                FaceBookConstants.USER_KEY_GENDER+","+
+                                FaceBookConstants.USER_KEY_BIRTHDAY);
                         request.setParameters(parameters);
                         request.executeAsync();
 

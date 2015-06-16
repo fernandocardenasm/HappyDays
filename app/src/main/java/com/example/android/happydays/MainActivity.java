@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.parse.ParseUser;
 
 
@@ -14,21 +16,38 @@ public class MainActivity extends ActionBarActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
+    public static final String LOGIN_CHOICE_FACEBOOK = "FACEBOOK";
+    public static final String LOGIN_CHOICE_PARSE = "PARSE";
+
+    protected String mLoginChoice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
-
-        if (currentUser == null){
-            navigateToLogin();
+        //Check if the User is login by using FB or ParseUser
+        if (AccessToken.getCurrentAccessToken()!=null){
+            Log.d(TAG, "Connected with FB.");
+            mLoginChoice = LOGIN_CHOICE_FACEBOOK;
+            Intent intent = getIntent();
+            
         }
         else{
-            Log.i(TAG, currentUser.getUsername());
-        }
-    }
+            ParseUser currentUser = ParseUser.getCurrentUser();
 
+            if (currentUser == null){
+                navigateToLogin();
+            }
+            else{
+                mLoginChoice = LOGIN_CHOICE_PARSE;
+                Log.i(TAG, currentUser.getUsername());
+            }
+        }
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,6 +71,8 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
