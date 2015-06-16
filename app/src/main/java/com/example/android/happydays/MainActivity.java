@@ -6,12 +6,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.parse.ParseUser;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -28,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
     }
 
     @Override
@@ -89,8 +94,6 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
 
@@ -100,5 +103,11 @@ public class MainActivity extends ActionBarActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
+    }
+
+    //Button to add happy moment
+
+    @OnClick(R.id.addButton) void addButton(){
+        Toast.makeText(MainActivity.this, "Clicked.noticed Button shadow", Toast.LENGTH_SHORT).show();
     }
 }
