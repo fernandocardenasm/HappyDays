@@ -27,12 +27,16 @@ public class MainActivity extends ActionBarActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //Check if the User is login by using FB or ParseUser
         if (AccessToken.getCurrentAccessToken()!=null){
             Log.d(TAG, "Connected with FB.");
             mLoginChoice = LOGIN_CHOICE_FACEBOOK;
             Intent intent = getIntent();
-            
         }
         else{
             ParseUser currentUser = ParseUser.getCurrentUser();
@@ -45,8 +49,6 @@ public class MainActivity extends ActionBarActivity {
                 Log.i(TAG, currentUser.getUsername());
             }
         }
-
-
     }
 
     @Override
