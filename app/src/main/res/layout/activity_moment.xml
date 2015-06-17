@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context="com.example.android.happydays.MomentActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6">
+        <ImageView
+            android:id="@+id/momentImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_launcher"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:contentDescription="Moment Image"/>
+    </RelativeLayout>
+
+    <EditText
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:id="@+id/momentText"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:gravity="top|start"
+        android:cursorVisible="false"
+        android:scrollbars="vertical"
+        android:hint="Type a description for your happy moment (optional)."/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/moment_cancel_text"
+            android:id="@+id/cancelMomentButton"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/moment_save_text"
+            android:id="@+id/saveMomentButton"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"/>
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

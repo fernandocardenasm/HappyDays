@@ -148,12 +148,19 @@ public class MainActivity extends ActionBarActivity {
 //            Bundle extras = data.getExtras();
 //            Bitmap imageBitmap = (Bitmap) extras.get("data");
             //mImageView.setImageBitmap(imageBitmap);
+            //Add the image to the gallery
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             mediaScanIntent.setData(mMediaUri);
             sendBroadcast(mediaScanIntent);
+
+            //Send the image to the MomentActivity
+            Intent momentIntent = new Intent(this, MomentActivity.class);
+            momentIntent.setData(mMediaUri);
+            startActivity(momentIntent);
         }
     }
 
+    //Get the Uri where it is going to be save on the mobile
     private Uri getOutputMediaFileUri(int mediaType) {
         //To be safe, you should check that the SDCard is mounted
         //using Environment.getExternalStorageState() before doing this
@@ -201,6 +208,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    //Validate if it is allowed to save the image on the mobile
     private boolean isExternalStorageAvailable(){
         String state = Environment.getExternalStorageState();
         if ( state.equals(Environment.MEDIA_MOUNTED)){

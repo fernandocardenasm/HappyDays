@@ -19,4 +19,7 @@
     <string name="error_title">Opps</string>
     <string name="login_error_message">Please make sure you enter an username and a password</string>
     <string name="error_failed_to_create_directory">Failed to create directory</string>
+    <string name="title_activity_moment">MomentActivity</string>
+    <string name="moment_cancel_text">Cancel</string>
+    <string name="moment_save_text">Save</string>
 </resources>
