@@ -22,4 +22,6 @@
     <string name="title_activity_moment">MomentActivity</string>
     <string name="moment_cancel_text">Cancel</string>
     <string name="moment_save_text">Save</string>
+    <string name="success_message">The moment was successfully created!</string>
+    <string name="error_moment_upload">It was not possible to create your happy moment. Please try it again!</string>
 </resources>

@@ -30,9 +30,6 @@ public class MainActivity extends ActionBarActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    public static final String LOGIN_CHOICE_FACEBOOK = "FACEBOOK";
-    public static final String LOGIN_CHOICE_PARSE = "PARSE";
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int MEDIA_TYPE_IMAGE = 2;
 
@@ -46,6 +43,18 @@ public class MainActivity extends ActionBarActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        Intent intent = getIntent();
+        if (intent.getStringExtra(AppConstants.NAME_ACTIVITY)!=null) {
+            if (intent.getStringExtra(AppConstants.NAME_ACTIVITY).equals(AppConstants.LOGIN_ACTIVITY)) {
+                Log.d(TAG, "Comes from login");
+            } else if (intent.getStringExtra(AppConstants.NAME_ACTIVITY).equals(AppConstants.SIGNUP_ACTIVITY)) {
+                Log.d(TAG, "Comes from sign_up");
+            } else if (intent.getStringExtra(AppConstants.NAME_ACTIVITY).equals(AppConstants.MOMENT_ACTIVITY)) {
+                Log.d(TAG, "Comes from moment");
+                Toast.makeText(MainActivity.this, "The moment was successfully created.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -58,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         //Check if the User is login by using FB or ParseUser
         if (AccessToken.getCurrentAccessToken()!=null && Profile.getCurrentProfile()!=null){
-            mLoginChoice = LOGIN_CHOICE_FACEBOOK;
+            mLoginChoice = AppConstants.LOGIN_CHOICE_FACEBOOK;
             Log.d(TAG, "Login with Facebook.");
         }
         else{
@@ -67,10 +76,11 @@ public class MainActivity extends ActionBarActivity {
                 navigateToLogin();
             }
             else{
-                mLoginChoice = LOGIN_CHOICE_PARSE;
+                mLoginChoice = AppConstants.LOGIN_CHOICE_PARSE;
                 Log.i(TAG, currentUser.getUsername());
             }
         }
+
     }
 
 
@@ -90,14 +100,11 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
-            Log.d(TAG, "Mlogin:"+mLoginChoice);
-            Log.d(TAG, "FB: " + LOGIN_CHOICE_FACEBOOK);
-            Log.d(TAG, "Parse: " + LOGIN_CHOICE_PARSE);
-            if (mLoginChoice.equals(LOGIN_CHOICE_FACEBOOK)){
+            if (mLoginChoice.equals(AppConstants.LOGIN_CHOICE_FACEBOOK)){
                 LoginManager.getInstance().logOut();
                 Log.d(TAG, "Logout with FB");
             }
-            else if (mLoginChoice.equals(LOGIN_CHOICE_PARSE)){
+            else if (mLoginChoice.equals(AppConstants.LOGIN_CHOICE_PARSE)){
                 ParseUser.logOut();
                 Log.d(TAG, "Logout with Parse");
             }
@@ -156,6 +163,7 @@ public class MainActivity extends ActionBarActivity {
             //Send the image to the MomentActivity
             Intent momentIntent = new Intent(this, MomentActivity.class);
             momentIntent.setData(mMediaUri);
+            momentIntent.putExtra(AppConstants.LOGIN_CHOICE, mLoginChoice);
             startActivity(momentIntent);
         }
     }

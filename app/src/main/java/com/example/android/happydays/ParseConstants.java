@@ -5,7 +5,15 @@ package com.example.android.happydays;
  */
 public final class ParseConstants {
 
+    //Class names
+    public static final String CLASS_MOMENTS = "Moment";
+
     //Field Names
     public static final String KEY_NAME = "name";
     public static final String KEY_USER_ID = "userId";
+    public static final String KEY_SENDER_ID = "senderId";
+    public static final String TYPE_IMAGE = "image";
+    public static final String KEY_FILE = "file";
+    public static final String KEY_MOMENT_TEXT = "momentDescription";
+    public static final String MOMENT_TEXT_EMPTY = "empty";
 }

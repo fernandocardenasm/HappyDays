@@ -83,6 +83,7 @@ public class SignUpActivity extends ActionBarActivity {
                 if (e==null){
                     Log.v(TAG, "Si");
                     Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                    intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
