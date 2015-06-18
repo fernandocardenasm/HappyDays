@@ -3,8 +3,6 @@ package com.example.android.happydays;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -17,11 +15,6 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.parse.ParseUser;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -29,10 +22,6 @@ import butterknife.OnClick;
 public class MainActivity extends ActionBarActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    public static final int MEDIA_TYPE_IMAGE = 2;
-
     protected String mCurrentPhotoPath;
     protected String mLoginChoice;
     private Uri mMediaUri;
@@ -125,107 +114,16 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    //Button to add happy moment
+    //Button to go to create a happy Moment
 
     @OnClick(R.id.addButton) void addButton(){
-        dispatchTakePictureIntent();
+
+        Intent intent = new Intent(this, MomentActivity.class);
+        intent.putExtra(AppConstants.LOGIN_CHOICE, mLoginChoice);
+        startActivity(intent);
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            //Save Image
-            mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-            if (mMediaUri == null){
-                Toast.makeText(MainActivity.this, "There was an error accessing your device's external storage.", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mMediaUri);
 
-                //Get the result of the intent
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //mImageView.setImageBitmap(imageBitmap);
-            //Add the image to the gallery
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            mediaScanIntent.setData(mMediaUri);
-            sendBroadcast(mediaScanIntent);
-
-            //Send the image to the MomentActivity
-            Intent momentIntent = new Intent(this, MomentActivity.class);
-            momentIntent.setData(mMediaUri);
-            momentIntent.putExtra(AppConstants.LOGIN_CHOICE, mLoginChoice);
-            startActivity(momentIntent);
-        }
-    }
-
-    //Get the Uri where it is going to be save on the mobile
-    private Uri getOutputMediaFileUri(int mediaType) {
-        //To be safe, you should check that the SDCard is mounted
-        //using Environment.getExternalStorageState() before doing this
-
-        if (isExternalStorageAvailable()){
-            //get the URI
-
-            //1. Get the external  storage directory
-
-            String appName = MainActivity.this.getString(R.string.app_name);
-
-            File mediaStorageDir = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                    appName);
-            //2. Create our subdirectory
-
-            if (! mediaStorageDir.exists()){
-                if (! mediaStorageDir.mkdirs()){
-                    Log.e(TAG, getString(R.string.error_failed_to_create_directory));
-                    return null;
-                }
-            }
-            //3. Create a filename
-            //4. Create the file
-
-            File mediaFile;
-            Date now = new Date();
-            String timestap = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(now);
-
-            String path = mediaStorageDir.getPath() + File.separator;
-
-            if (mediaType == MEDIA_TYPE_IMAGE){
-                mediaFile = new File(path + "IMG" + timestap + ".jpg");
-            }
-            else{
-                return null;
-            }
-
-            Log.d(TAG, "File: " + Uri.fromFile(mediaFile));
-            //5. Create the file's Uri
-            return Uri.fromFile(mediaFile);
-        }
-        else{
-            return null;
-        }
-    }
-
-    //Validate if it is allowed to save the image on the mobile
-    private boolean isExternalStorageAvailable(){
-        String state = Environment.getExternalStorageState();
-        if ( state.equals(Environment.MEDIA_MOUNTED)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
 
 }
