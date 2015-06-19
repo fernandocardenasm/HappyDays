@@ -3,6 +3,7 @@ package com.example.android.happydays;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
@@ -18,7 +19,7 @@ public class HappyDaysApplication extends Application {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "jNEd9V7DXUrMW3QLGX4D7aDAN3FM1xMSVkJMhNZf", "29wOSWe1JIelBbs2QrkNyGhETllEg70bKP9u8TQa");
-
+        ParseFacebookUtils.initialize(this);
         /*ParseObject testObject = new ParseObject("TestObject");
         testObject.put("foo", "bar");
         testObject.saveInBackground();

@@ -11,6 +11,4 @@ public final class AppConstants {
     public static final String LOGIN_CHOICE_FACEBOOK = "FACEBOOK";
     public static final String LOGIN_CHOICE_PARSE = "PARSE";
     public static final String LOGIN_CHOICE = "LOGIN_CHOICE";
-    public static final String TAKE_NEW_PICTURE = "TAKE_NEW_PICTURE";
-    public static final String ADD_PICTURE_FROM_GALLERY = "PICTURE_FROM_GALLERY";
 }

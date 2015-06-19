@@ -9,9 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.parse.ParseUser;
 
@@ -54,22 +52,18 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Check if the User is login by using FB or ParseUser
-        if (AccessToken.getCurrentAccessToken()!=null && Profile.getCurrentProfile()!=null){
-            mLoginChoice = AppConstants.LOGIN_CHOICE_FACEBOOK;
-            Log.d(TAG, "Login with Facebook.");
+
+        Intent intent = getIntent();
+        mLoginChoice =  intent.getStringExtra(AppConstants.LOGIN_CHOICE);
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser == null){
+                navigateToLogin();
         }
         else{
-            ParseUser currentUser = ParseUser.getCurrentUser();
-            if (currentUser == null){
-                navigateToLogin();
-            }
-            else{
-                mLoginChoice = AppConstants.LOGIN_CHOICE_PARSE;
+            mLoginChoice = AppConstants.LOGIN_CHOICE_PARSE;
                 Log.i(TAG, currentUser.getUsername());
-            }
         }
-
     }
 
 
@@ -91,6 +85,7 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_logout) {
             if (mLoginChoice.equals(AppConstants.LOGIN_CHOICE_FACEBOOK)){
                 LoginManager.getInstance().logOut();
+                ParseUser.logOut();
                 Log.d(TAG, "Logout with FB");
             }
             else if (mLoginChoice.equals(AppConstants.LOGIN_CHOICE_PARSE)){

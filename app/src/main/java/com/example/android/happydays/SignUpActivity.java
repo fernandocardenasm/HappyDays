@@ -8,9 +8,12 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
+import com.parse.CountCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -38,6 +41,70 @@ public class SignUpActivity extends ActionBarActivity {
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
+    //Create the User in the Parse Database
+    protected void signUpUser(final String name, final String email, final String passw){
+        //Create the parse user
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", email);
+
+        query.countInBackground(new CountCallback(){
+
+            @Override
+            public void done(int count, ParseException e) {
+                // TODO Auto-generated method stub
+                mProgressBar.setVisibility(View.INVISIBLE);
+                if (e == null) {
+                    if(count==0){
+                        //Username doesnt exit
+                        ParseUser user = new ParseUser();
+
+                        //Set core properties
+                        user.setUsername(email);
+                        user.setEmail(email);
+                        user.setPassword(passw);
+
+                        //Set custom properties
+                        user.put(ParseConstants.KEY_NAME, name);
+                        user.put(ParseConstants.KEY_GENDER, getString(R.string.empty_string));
+                        user.put(ParseConstants.KEY_BIRTHDAY, getString(R.string.empty_string));
+
+                        user.signUpInBackground(new SignUpCallback() {
+                            @Override
+                            public void done(final ParseException e) {
+                                mProgressBar.setVisibility(View.INVISIBLE);
+                                if (e==null){
+                                    Log.v(TAG, "Si");
+                                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                    intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
+                                    intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                }
+                                else{
+                                    Log.v(TAG, "No: " + e);
+                                }
+                            }
+                        });
+
+                    }
+                    else{
+                        Toast.makeText(SignUpActivity.this, "The email already exists. Try a different one.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+        });
+
+    }
+
+    protected final boolean isEmailValid(CharSequence email){
+        if (email == null)
+            return false;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     //Trigger when the "Sign Up" button is pressed.
     @OnClick(R.id.signUpButton) void submitUserForm(){
 
@@ -62,42 +129,5 @@ public class SignUpActivity extends ActionBarActivity {
             signUpUser(name, email, passw);
         }
 
-    }
-
-    //Create the User in the Parse Database
-    protected void signUpUser(String name, String email, String passw){
-        //Create the parse user
-        ParseUser user = new ParseUser();
-
-        //Set core properties
-        user.setUsername(email);
-        user.setEmail(email);
-        user.setPassword(passw);
-
-        //Set custom properties
-        user.put(ParseConstants.KEY_NAME, name);
-        user.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(final ParseException e) {
-                mProgressBar.setVisibility(View.INVISIBLE);
-                if (e==null){
-                    Log.v(TAG, "Si");
-                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                    intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-                else{
-                    Log.v(TAG, "No: " + e);
-                }
-            }
-        });
-    }
-
-    protected final boolean isEmailValid(CharSequence email){
-        if (email == null)
-            return false;
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

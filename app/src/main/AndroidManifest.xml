@@ -19,6 +19,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,10 +29,12 @@
         </activity>
         <activity
             android:name=".LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".SignUpActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_sign_up"
             android:parentActivityName=".LoginActivity" >
             <meta-data
@@ -51,6 +54,7 @@
         <activity
             android:name=".MomentActivity"
             android:label="@string/title_activity_moment"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

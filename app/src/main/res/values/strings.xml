@@ -25,4 +25,5 @@
     <string name="success_message">The moment was successfully created!</string>
     <string name="error_moment_upload">It was not possible to create your happy moment. Please try it again!</string>
     <string name="upload_image_info_text">It necessary to upload an image to save the moment.</string>
+    <string name="empty_string">empty</string>
 </resources>

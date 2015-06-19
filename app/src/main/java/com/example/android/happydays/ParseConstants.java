@@ -11,9 +11,15 @@ public final class ParseConstants {
     //Field Names
     public static final String KEY_NAME = "name";
     public static final String KEY_USER_ID = "userId";
+    public static final String KEY_USER_EMAIL = "email";
     public static final String KEY_SENDER_ID = "senderId";
     public static final String TYPE_IMAGE = "image";
     public static final String KEY_FILE = "file";
     public static final String KEY_MOMENT_TEXT = "momentDescription";
     public static final String MOMENT_TEXT_EMPTY = "empty";
+    public static final String KEY_GENDER = "gender";
+    public static final String KEY_BIRTHDAY = "birthday";
+
+    //Facebook
+    public static final int CLICK_FACEBOOK_LOGIN = 1;
 }

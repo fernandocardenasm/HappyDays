@@ -5,30 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 
 public class LoginActivity extends Activity {
@@ -36,11 +27,14 @@ public class LoginActivity extends Activity {
     public static final String TAG = LoginActivity.class.getSimpleName();
 
     protected LoginButton mFacebookButton;
-    protected CallbackManager mCallbackManager;
+
+    protected boolean delayFacebook;
 
     @InjectView(R.id.emailText) EditText mEmailText;
     @InjectView(R.id.passwordText) EditText mPasswordText;
     @InjectView(R.id.progressBar) ProgressBar mProgressBar;
+    @InjectView(R.id.loginButton) Button mLoginButton;
+    @InjectView(R.id.signUpButton) Button mSignUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,103 +43,170 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
         mProgressBar.setVisibility(View.INVISIBLE);
+        delayFacebook = true;
+
+        //Avoid to show start the ParseFacebook utilities until the user clicks the Login button
         mFacebookButton = (LoginButton) findViewById(R.id.loginFacebookButton);
-        mFacebookButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday"));
+        mFacebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayFacebook = false;
+                disableButtons();
+            }
+        });
 
-        //Register callback
-        mCallbackManager = CallbackManager.Factory.create();
+        mSignUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        LoginManager.getInstance().registerCallback(mCallbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disableButtons();
+                String email = mEmailText.getText().toString().trim();
+                String password = mPasswordText.getText().toString().trim();
 
-                        GraphRequest request = GraphRequest.newMeRequest(
-                                loginResult.getAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(
-                                            JSONObject object,
-                                            GraphResponse response) {
-                                        // Application code
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        try {
-                                            intent.putExtra("LOGIN_CHOICE", AppConstants.LOGIN_CHOICE_FACEBOOK);
-                                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
+                if (email.isEmpty() || password.isEmpty()){
+                    AlertDialogGenerator dialog = new AlertDialogGenerator();
+                    dialog.showAlertDialog(LoginActivity.this, getString(R.string.login_error_message), getString(R.string.error_title));
+                    enableButtons();
+                }
+                else{
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    loginUser(email, password);
+                }
 
-                                            intent.putExtra(FaceBookConstants.USER_KEY_ID,object.get(FaceBookConstants.USER_KEY_ID).toString());
-                                            intent.putExtra(FaceBookConstants.USER_KEY_NAME,object.get(FaceBookConstants.USER_KEY_NAME).toString());
-                                            intent.putExtra(FaceBookConstants.USER_KEY_GENDER,object.get(FaceBookConstants.USER_KEY_GENDER).toString());
-                                            intent.putExtra(FaceBookConstants.USER_KEY_BIRTHDAY,object.get(FaceBookConstants.USER_KEY_BIRTHDAY).toString());
+            }
+        });
 
-                                            if (object.get(FaceBookConstants.USER_KEY_EMAIL).toString()==null){
-                                                intent.putExtra(FaceBookConstants.USER_KEY_EMAIL,object.get("empty").toString());
+            ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginActivity.this,
+                    Arrays.asList("public_profile", "email", "user_birthday"),
+                    new LogInCallback() {
+                        @Override
+                        public void done(final ParseUser user, ParseException err) {
+                            if (user == null) {
+                                Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                            } else if (user.isNew()) {
+                                Log.d("MyApp", "User signed up and logged in through Facebook!");
+
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                                intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                Log.d(TAG, "Sign up and Login");
+
+                                //Get user's info from Facebook
+                                /*GraphRequest request = GraphRequest.newMeRequest(
+                                        AccessToken.getCurrentAccessToken(),
+                                        new GraphRequest.GraphJSONObjectCallback() {
+                                            @Override
+                                            public void onCompleted(
+                                                    JSONObject object,
+                                                    GraphResponse response) {
+                                                // Application code
+                                                mProgressBar.setVisibility(View.INVISIBLE);
+                                                HappyDaysApplication.updateParseInstallation(user);
+
+                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                                                intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                Log.d(TAG, "Sign up and Login");
                                             }
-                                            else{
-                                                intent.putExtra(FaceBookConstants.USER_KEY_EMAIL,object.get(FaceBookConstants.USER_KEY_EMAIL).toString());
-                                            }
+                                        });
+                                Bundle parameters = new Bundle();
+                                parameters.putString(FaceBookConstants.USER_KEY_FIELDS,
+                                        FaceBookConstants.USER_KEY_ID + "," +
+                                                FaceBookConstants.USER_KEY_NAME + "," +
+                                                FaceBookConstants.USER_KEY_EMAIL + "," +
+                                                FaceBookConstants.USER_KEY_GENDER + "," +
+                                                FaceBookConstants.USER_KEY_BIRTHDAY);
+                                request.setParameters(parameters);
+                                request.executeAsync();
+                                */
 
-                                            Log.d(TAG,"Id:"+object.get("id").toString());
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        Log.v(TAG, response.toString());
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString(FaceBookConstants.USER_KEY_FIELDS,
-                                FaceBookConstants.USER_KEY_ID+","+
-                                FaceBookConstants.USER_KEY_NAME+","+
-                                FaceBookConstants.USER_KEY_EMAIL+","+
-                                FaceBookConstants.USER_KEY_GENDER+","+
-                                FaceBookConstants.USER_KEY_BIRTHDAY);
-                        request.setParameters(parameters);
-                        request.executeAsync();
+                            } else {
+                                Log.d("MyApp", "User logged in through Facebook!");
+                                HappyDaysApplication.updateParseInstallation(user);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                                intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                Log.d(TAG, "Login");
+                            }
+                            enableButtons();
+                        }
+                    });
 
-                        Log.d(TAG, "Success: ");
 
-                    }
+        }
 
-                    @Override
-                    public void onCancel() {
-                        Log.d(TAG, "Cancel");
-                    }
-
-                    @Override
-                    public void onError(FacebookException e) {
-                        Log.d(TAG, "Error");
-                    }
-                });
-    }
+//    //Trigger when the users signs up and logs in on Facebook.
+//    private void SignUpLoginParseFaceBook(JSONObject object, GraphResponse response, ParseUser user) {
+//        //
+//        try {
+//            //Add facebook info to the parse facebook user
+//            user.put(ParseConstants.KEY_NAME, object.get(ParseConstants.KEY_NAME).toString());
+//            user.put(ParseConstants.KEY_GENDER, object.get(ParseConstants.KEY_GENDER).toString());
+//            user.put(ParseConstants.KEY_BIRTHDAY, object.get(ParseConstants.KEY_BIRTHDAY).toString());
+//
+//            if (object.get(ParseConstants.KEY_USER_EMAIL).toString() == null) {
+//                user.setEmail(object.get(getString(R.string.empty_string)).toString());
+//            } else {
+//                user.setEmail(object.get(ParseConstants.KEY_USER_EMAIL).toString());
+//            }
+//
+//            user.signUpInBackground(new SignUpCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    if (e==null){
+//
+//                    }
+//                    else{
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//            Log.d(TAG, "Id:" + object.get("id").toString());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Log.v(TAG, response.toString());
+//    }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (!delayFacebook){
+            ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
-    @OnClick(R.id.signUpButton) void goToSignUpActivity(){
-        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-        startActivity(intent);
+    private void enableButtons(){
+
+            mLoginButton.setEnabled(true);
+            mFacebookButton.setEnabled(true);
+            mSignUpButton.setEnabled(true);
+
     }
 
-    //Trigger when login button is pressed.
-    @OnClick(R.id.loginButton) void submit(){
-        String email = mEmailText.getText().toString().trim();
-        String password = mPasswordText.getText().toString().trim();
-
-        if (email.isEmpty() || password.isEmpty()){
-            AlertDialogGenerator dialog = new AlertDialogGenerator();
-            dialog.showAlertDialog(LoginActivity.this, getString(R.string.login_error_message), getString(R.string.error_title));
-        }
-        else{
-            mProgressBar.setVisibility(View.VISIBLE);
-            loginUser(email, password);
-        }
+    private void disableButtons(){
+        mFacebookButton.setEnabled(false);
+        mSignUpButton.setEnabled(false);
+        mLoginButton.setEnabled(false);
     }
 
     private void loginUser(String username, String password) {
@@ -165,7 +226,7 @@ public class LoginActivity extends Activity {
                     //Success
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
-                    intent.putExtra("LOGIN_CHOICE", AppConstants.LOGIN_CHOICE_PARSE);
+                    intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -173,8 +234,10 @@ public class LoginActivity extends Activity {
                     AlertDialogGenerator dialog = new AlertDialogGenerator();
                     dialog.showAlertDialog(LoginActivity.this, e.getMessage(), getString(R.string.error_title));
                 }
+                enableButtons();
             }
         });
 
     }
+
 }
