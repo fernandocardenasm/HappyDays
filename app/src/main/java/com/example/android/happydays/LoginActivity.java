@@ -30,11 +30,16 @@ public class LoginActivity extends Activity {
 
     protected boolean delayFacebook;
 
-    @InjectView(R.id.emailText) EditText mEmailText;
-    @InjectView(R.id.passwordText) EditText mPasswordText;
-    @InjectView(R.id.progressBar) ProgressBar mProgressBar;
-    @InjectView(R.id.loginButton) Button mLoginButton;
-    @InjectView(R.id.signUpButton) Button mSignUpButton;
+    @InjectView(R.id.emailText)
+    EditText mEmailText;
+    @InjectView(R.id.passwordText)
+    EditText mPasswordText;
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.loginButton)
+    Button mLoginButton;
+    @InjectView(R.id.signUpButton)
+    Button mSignUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +75,11 @@ public class LoginActivity extends Activity {
                 String email = mEmailText.getText().toString().trim();
                 String password = mPasswordText.getText().toString().trim();
 
-                if (email.isEmpty() || password.isEmpty()){
+                if (email.isEmpty() || password.isEmpty()) {
                     AlertDialogGenerator dialog = new AlertDialogGenerator();
                     dialog.showAlertDialog(LoginActivity.this, getString(R.string.login_error_message), getString(R.string.error_title));
                     enableButtons();
-                }
-                else{
+                } else {
                     mProgressBar.setVisibility(View.VISIBLE);
                     loginUser(email, password);
                 }
@@ -83,25 +87,26 @@ public class LoginActivity extends Activity {
             }
         });
 
-            ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginActivity.this,
-                    Arrays.asList("public_profile", "email", "user_birthday"),
-                    new LogInCallback() {
-                        @Override
-                        public void done(final ParseUser user, ParseException err) {
-                            if (user == null) {
-                                Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
-                            } else if (user.isNew()) {
-                                Log.d("MyApp", "User signed up and logged in through Facebook!");
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginActivity.this,
+                Arrays.asList("public_profile", "email", "user_birthday"),
+                new LogInCallback() {
+                    @Override
+                    public void done(final ParseUser user, ParseException err) {
+                        if (user == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                        } else if (user.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Facebook!");
 
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
-                                intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                Log.d(TAG, "Sign up and Login");
+                            HappyDaysApplication.updateParseInstallation(user);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            Log.d(TAG, "Sign up and Login");
 
-                                //Get user's info from Facebook
+                            //Get user's info from Facebook
                                 /*GraphRequest request = GraphRequest.newMeRequest(
                                         AccessToken.getCurrentAccessToken(),
                                         new GraphRequest.GraphJSONObjectCallback() {
@@ -133,23 +138,23 @@ public class LoginActivity extends Activity {
                                 request.executeAsync();
                                 */
 
-                            } else {
-                                Log.d("MyApp", "User logged in through Facebook!");
-                                HappyDaysApplication.updateParseInstallation(user);
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
-                                intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                Log.d(TAG, "Login");
-                            }
-                            enableButtons();
+                        } else {
+                            Log.d("MyApp", "User logged in through Facebook!");
+                            HappyDaysApplication.updateParseInstallation(user);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            Log.d(TAG, "Login");
                         }
-                    });
+                        enableButtons();
+                    }
+                });
 
 
-        }
+    }
 
 //    //Trigger when the users signs up and logs in on Facebook.
 //    private void SignUpLoginParseFaceBook(JSONObject object, GraphResponse response, ParseUser user) {
@@ -190,20 +195,18 @@ public class LoginActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (!delayFacebook){
+        if (!delayFacebook) {
             ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void enableButtons(){
-
-            mLoginButton.setEnabled(true);
-            mFacebookButton.setEnabled(true);
-            mSignUpButton.setEnabled(true);
-
+    private void enableButtons() {
+        mLoginButton.setEnabled(true);
+        mFacebookButton.setEnabled(true);
+        mSignUpButton.setEnabled(true);
     }
 
-    private void disableButtons(){
+    private void disableButtons() {
         mFacebookButton.setEnabled(false);
         mSignUpButton.setEnabled(false);
         mLoginButton.setEnabled(false);

@@ -6,16 +6,22 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
+import com.facebook.login.widget.LoginButton;
 import com.parse.CountCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,11 +32,16 @@ public class SignUpActivity extends ActionBarActivity {
 
     public static final String TAG = SignUpActivity.class.getSimpleName();
 
+    protected LoginButton mFacebookButton;
+
+    protected boolean delayFacebook;
+
     @InjectView(R.id.nameText) EditText mName;
     @InjectView(R.id.emailText) EditText mEmail;
     @InjectView(R.id.passwordText) EditText mPassword;
     @InjectView(R.id.passwordTextConfirm) EditText mPasswordConfirm;
     @InjectView(R.id.progressBar) ProgressBar mProgressBar;
+    @InjectView(R.id.signUpButton) Button mSignUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +50,76 @@ public class SignUpActivity extends ActionBarActivity {
         setContentView(R.layout.activity_sign_up);
         ButterKnife.inject(this);
         mProgressBar.setVisibility(View.INVISIBLE);
+        delayFacebook = false;
+
+        mFacebookButton = (LoginButton) findViewById(R.id.loginFacebookButton);
+
+        mFacebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayFacebook = false;
+                disableButtons();
+            }
+        });
+
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpActivity.this,
+                Arrays.asList("public_profile", "email", "user_birthday"),
+                new LogInCallback() {
+                    @Override
+                    public void done(final ParseUser user, ParseException err) {
+                        if (user == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                        } else if (user.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+                            HappyDaysApplication.updateParseInstallation(user);
+                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            Log.d(TAG, "Sign up and Login");
+
+                        } else {
+                            Log.d("MyApp", "User logged in through Facebook!");
+                            HappyDaysApplication.updateParseInstallation(user);
+                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
+                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            Log.d(TAG, "Login");
+                        }
+                        enableButtons();
+                    }
+                });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (!delayFacebook) {
+            ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void enableButtons(){
+        mFacebookButton.setEnabled(true);
+        mSignUpButton.setEnabled(true);
+    }
+
+    private void disableButtons(){
+        mFacebookButton.setEnabled(false);
+        mSignUpButton.setEnabled(false);
+
     }
 
     //Create the User in the Parse Database
     protected void signUpUser(final String name, final String email, final String passw){
         //Create the parse user
 
+        disableButtons();
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereEqualTo("username", email);
 
@@ -93,8 +168,8 @@ public class SignUpActivity extends ActionBarActivity {
                         Toast.makeText(SignUpActivity.this, "The email already exists. Try a different one.", Toast.LENGTH_SHORT).show();
                     }
                 }
+                enableButtons();
             }
-
         });
 
     }
