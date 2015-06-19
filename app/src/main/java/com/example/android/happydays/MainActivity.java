@@ -62,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
         }
         else{
             mLoginChoice = AppConstants.LOGIN_CHOICE_PARSE;
-                Log.i(TAG, currentUser.getUsername());
+            Log.d(TAG, "Current User:"+ currentUser.getUsername());
         }
     }
 

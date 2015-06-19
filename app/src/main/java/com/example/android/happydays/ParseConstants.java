@@ -19,6 +19,7 @@ public final class ParseConstants {
     public static final String MOMENT_TEXT_EMPTY = "empty";
     public static final String KEY_GENDER = "gender";
     public static final String KEY_BIRTHDAY = "birthday";
+    public static final String EMPTY_FIELD = "empty";
 
     //Facebook
     public static final int CLICK_FACEBOOK_LOGIN = 1;

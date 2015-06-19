@@ -14,14 +14,11 @@ import android.widget.Toast;
 import com.facebook.FacebookSdk;
 import com.facebook.login.widget.LoginButton;
 import com.parse.CountCallback;
-import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
-import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -50,50 +47,8 @@ public class SignUpActivity extends ActionBarActivity {
         setContentView(R.layout.activity_sign_up);
         ButterKnife.inject(this);
         mProgressBar.setVisibility(View.INVISIBLE);
-        delayFacebook = false;
 
-        mFacebookButton = (LoginButton) findViewById(R.id.loginFacebookButton);
 
-        mFacebookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delayFacebook = false;
-                disableButtons();
-            }
-        });
-
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpActivity.this,
-                Arrays.asList("public_profile", "email", "user_birthday"),
-                new LogInCallback() {
-                    @Override
-                    public void done(final ParseUser user, ParseException err) {
-                        if (user == null) {
-                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
-                        } else if (user.isNew()) {
-                            Log.d("MyApp", "User signed up and logged in through Facebook!");
-                            HappyDaysApplication.updateParseInstallation(user);
-                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
-                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            Log.d(TAG, "Sign up and Login");
-
-                        } else {
-                            Log.d("MyApp", "User logged in through Facebook!");
-                            HappyDaysApplication.updateParseInstallation(user);
-                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
-                            intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.SIGNUP_ACTIVITY);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            Log.d(TAG, "Login");
-                        }
-                        enableButtons();
-                    }
-                });
     }
 
     @Override
@@ -104,22 +59,10 @@ public class SignUpActivity extends ActionBarActivity {
         }
     }
 
-    private void enableButtons(){
-        mFacebookButton.setEnabled(true);
-        mSignUpButton.setEnabled(true);
-    }
-
-    private void disableButtons(){
-        mFacebookButton.setEnabled(false);
-        mSignUpButton.setEnabled(false);
-
-    }
-
     //Create the User in the Parse Database
     protected void signUpUser(final String name, final String email, final String passw){
         //Create the parse user
 
-        disableButtons();
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereEqualTo("username", email);
 
@@ -132,7 +75,7 @@ public class SignUpActivity extends ActionBarActivity {
                 if (e == null) {
                     if(count==0){
                         //Username doesnt exit
-                        ParseUser user = new ParseUser();
+                        final ParseUser user = new ParseUser();
 
                         //Set core properties
                         user.setUsername(email);
@@ -155,6 +98,7 @@ public class SignUpActivity extends ActionBarActivity {
                                     intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    HappyDaysApplication.updateParseInstallation(user);
                                     startActivity(intent);
                                 }
                                 else{
@@ -168,7 +112,6 @@ public class SignUpActivity extends ActionBarActivity {
                         Toast.makeText(SignUpActivity.this, "The email already exists. Try a different one.", Toast.LENGTH_SHORT).show();
                     }
                 }
-                enableButtons();
             }
         });
 
