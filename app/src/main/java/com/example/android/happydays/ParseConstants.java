@@ -12,6 +12,7 @@ public final class ParseConstants {
     public static final String KEY_NAME = "name";
     public static final String KEY_USER_ID = "userId";
     public static final String KEY_USER_EMAIL = "email";
+    public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_SENDER_ID = "senderId";
     public static final String TYPE_IMAGE = "image";
     public static final String KEY_FILE = "file";

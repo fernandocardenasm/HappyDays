@@ -150,38 +150,6 @@ public class LoginActivity extends Activity {
                                 request.setParameters(parameters);
                                 request.executeAsync();
 
-                                //Get user's info from Facebook
-                                /*GraphRequest request = GraphRequest.newMeRequest(
-                                        AccessToken.getCurrentAccessToken(),
-                                        new GraphRequest.GraphJSONObjectCallback() {
-                                            @Override
-                                            public void onCompleted(
-                                                    JSONObject object,
-                                                    GraphResponse response) {
-                                                // Application code
-                                                mProgressBar.setVisibility(View.INVISIBLE);
-                                                HappyDaysApplication.updateParseInstallation(user);
-
-                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_FACEBOOK);
-                                                intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.LOGIN_ACTIVITY);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                startActivity(intent);
-                                                Log.d(TAG, "Sign up and Login");
-                                            }
-                                        });
-                                Bundle parameters = new Bundle();
-                                parameters.putString(FaceBookConstants.USER_KEY_FIELDS,
-                                        FaceBookConstants.USER_KEY_ID + "," +
-                                                FaceBookConstants.USER_KEY_NAME + "," +
-                                                FaceBookConstants.USER_KEY_EMAIL + "," +
-                                                FaceBookConstants.USER_KEY_GENDER + "," +
-                                                FaceBookConstants.USER_KEY_BIRTHDAY);
-                                request.setParameters(parameters);
-                                request.executeAsync();
-                                */
-
                             } else {
                                 Log.d("MyApp", "User logged in through Facebook!");
                                 HappyDaysApplication.updateParseInstallation(user);
