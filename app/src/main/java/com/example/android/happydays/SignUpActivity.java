@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.android.happydays.ui.MainActivity;
 import com.facebook.FacebookSdk;
 import com.facebook.login.widget.LoginButton;
 import com.parse.CountCallback;

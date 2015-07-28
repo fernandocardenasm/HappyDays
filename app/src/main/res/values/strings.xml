@@ -26,4 +26,9 @@
     <string name="error_moment_upload">It was not possible to create your happy moment. Please try it again!</string>
     <string name="upload_image_info_text">It necessary to upload an image to save the moment.</string>
     <string name="empty_string">empty</string>
+
+    <string name="clear_cache_menu">Clear Caches</string>
+    <string name="clear_cache_complete_toast">Caches have been cleared</string>
+    <string name="imageview_description">Image Thumbnail</string>
+    <string name="no_network_connection_toast">No network connection found</string>
 </resources>

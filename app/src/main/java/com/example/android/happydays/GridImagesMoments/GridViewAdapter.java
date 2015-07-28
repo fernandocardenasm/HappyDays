@@ -2,17 +2,19 @@ package com.example.android.happydays.GridImagesMoments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.parse.ParseFile;
-import com.parse.ParseImageView;
 import com.parse.ParseObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class GridViewAdapter extends ArrayAdapter<ParseObject> {
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new ViewHolder();
             holder.imageTitle = (TextView) row.findViewById(R.id.text);
-            holder.image = (ParseImageView) row.findViewById(R.id.image);
+            holder.image = (ImageView) row.findViewById(R.id.image);
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();
@@ -57,9 +59,10 @@ public class GridViewAdapter extends ArrayAdapter<ParseObject> {
             holder.imageTitle.setText(moment.getString(ParseConstants.KEY_MOMENT_TEXT));
         }
         ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
-        //Uri fileUri = Uri.parse(file.getUrl());
-        holder.image.setParseFile(file);
-        holder.image.loadInBackground();
+        Uri fileUri = Uri.parse(file.getUrl());
+
+
+        Picasso.with(context).load(fileUri.toString()).into(holder.image);
 
 
         return row;
@@ -67,7 +70,7 @@ public class GridViewAdapter extends ArrayAdapter<ParseObject> {
 
     static class ViewHolder {
         TextView imageTitle;
-        ParseImageView image;
+        ImageView image;
     }
     public void refill (List<ParseObject> moments){
         mMoments.clear();
