@@ -2,6 +2,7 @@ package com.example.android.happydays.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -10,14 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.happydays.AppConstants;
-import com.example.android.happydays.GridImagesMoments.GridViewAdapter;
 import com.example.android.happydays.LoginActivity;
-import com.example.android.happydays.MomentActivity;
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.facebook.FacebookSdk;
@@ -29,9 +27,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -49,22 +44,22 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+//        setContentView(R.layout.activity_main);
+//        ButterKnife.inject(this);
+//
+//        mEmptyTextView = (TextView) findViewById(android.R.id.empty);
+//
+//        mGridView = (GridView) findViewById(R.id.gridView);
+//        mGridView.setEmptyView(mEmptyTextView);
 
-        mEmptyTextView = (TextView) findViewById(android.R.id.empty);
-
-        mGridView = (GridView) findViewById(R.id.gridView);
-        mGridView.setEmptyView(mEmptyTextView);
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(mOnRefresherListener);
-        mSwipeRefreshLayout.setColorSchemeColors(
-                R.color.swipeRefresh1,
-                R.color.swipeRefresh2,
-                R.color.swipeRefresh3,
-                R.color.swipeRefresh4
-        );
+//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+//        mSwipeRefreshLayout.setOnRefreshListener(mOnRefresherListener);
+//        mSwipeRefreshLayout.setColorSchemeColors(
+//                R.color.swipeRefresh1,
+//                R.color.swipeRefresh2,
+//                R.color.swipeRefresh3,
+//                R.color.swipeRefresh4
+//        );
 
         Intent intent = getIntent();
         if (intent.getStringExtra(AppConstants.NAME_ACTIVITY)!=null) {
@@ -104,19 +99,26 @@ public class MainActivity extends ActionBarActivity {
 //                Utils.enableStrictMode();
 //            }
 
-            loadMoments();
+            //loadMoments();
+            String tag = ImageGridFragment.class.getSimpleName();
+            Fragment fr = getSupportFragmentManager().findFragmentByTag(tag);
+            if (fr == null) {
+                fr = new ImageGridFragment();
+            }
+            setTitle("Hola");
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fr, tag).commit();
         }
     }
 
     @Override
     protected void onPause() {
-        int count = mGridView.getCount();
-        for (int i = 0; i < count; i++) {
-            ImageView v = (ImageView) mGridView.getChildAt(i);
-            if (v != null) {
-                if (v.getDrawable() != null) v.getDrawable().setCallback(null);
-            }
-        }
+//        int count = mGridView.getCount();
+//        for (int i = 0; i < count; i++) {
+//            ImageView v = (ImageView) mGridView.getChildAt(i);
+//            if (v != null) {
+//                if (v.getDrawable() != null) v.getDrawable().setCallback(null);
+//            }
+//        }
         super.onPause();
     }
 
@@ -180,42 +182,42 @@ public class MainActivity extends ActionBarActivity {
 
                 //Validating if the SwipeRefresher is being used
 
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-
-                if (e == null){
-                    //We found moments
-                    mMoments = moments;
-                    if (mGridView.getAdapter() == null){
-                        GridViewAdapter mGridViewAdapter = new GridViewAdapter(MainActivity.this, R.layout.grid_item_layout, moments);
-                        mGridView.setAdapter(mGridViewAdapter);
-                    }
-                    else{
-                        ((GridViewAdapter)mGridView.getAdapter()).refill(mMoments);
-                    }
-                    mGridView.setOnItemClickListener(mOnItemClickListener);
-                }
+//                if (mSwipeRefreshLayout.isRefreshing()){
+//                    mSwipeRefreshLayout.setRefreshing(false);
+//                }
+//
+//                if (e == null){
+//                    //We found moments
+//                    mMoments = moments;
+//                    if (mGridView.getAdapter() == null){
+//                        GridViewAdapter mGridViewAdapter = new GridViewAdapter(MainActivity.this, R.layout.grid_item_layout, moments);
+//                        mGridView.setAdapter(mGridViewAdapter);
+//                    }
+//                    else{
+//                        ((GridViewAdapter)mGridView.getAdapter()).refill(mMoments);
+//                    }
+//                    mGridView.setOnItemClickListener(mOnItemClickListener);
+//                }
             }
         });
     }
 
 
-    protected SwipeRefreshLayout.OnRefreshListener mOnRefresherListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            loadMoments();
-        }
-    };
+//    protected SwipeRefreshLayout.OnRefreshListener mOnRefresherListener = new SwipeRefreshLayout.OnRefreshListener() {
+//        @Override
+//        public void onRefresh() {
+//            loadMoments();
+//        }
+//    };
 
 //    Button to go to create a happy Moment
 
-    @OnClick(R.id.addButton) void addButton(){
-
-        Intent intent = new Intent(this, MomentActivity.class);
-        intent.putExtra(AppConstants.LOGIN_CHOICE, mLoginChoice);
-        startActivity(intent);
-    }
+//    @OnClick(R.id.addButton) void addButton(){
+//
+//        Intent intent = new Intent(this, MomentActivity.class);
+//        intent.putExtra(AppConstants.LOGIN_CHOICE, mLoginChoice);
+//        startActivity(intent);
+//    }
 
 
 }

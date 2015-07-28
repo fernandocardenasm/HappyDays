@@ -31,4 +31,10 @@
     <string name="clear_cache_complete_toast">Caches have been cleared</string>
     <string name="imageview_description">Image Thumbnail</string>
     <string name="no_network_connection_toast">No network connection found</string>
+    <string name="descr_image">description_image</string>
+
+    <string name="menu_item_clear_memory_cache">Clear memory cache</string>
+    <string name="menu_item_clear_disc_cache">Clear disc cache</string>
+    <string name="menu_item_pause_on_scroll">Pause on scroll</string>
+    <string name="menu_item_pause_on_fling">Pause on fling</string>
 </resources>
