@@ -3,15 +3,10 @@ package com.example.android.happydays.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.happydays.AppConstants;
@@ -34,11 +29,7 @@ public class MainActivity extends ActionBarActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
     protected String mLoginChoice;
 
-    private List<ParseObject> mMoments;
-    private GridView mGridView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    TextView mEmptyTextView;
-    ParseUser currentUser;
+    protected ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
 //                R.color.swipeRefresh3,
 //                R.color.swipeRefresh4
 //        );
+
 
         Intent intent = getIntent();
         if (intent.getStringExtra(AppConstants.NAME_ACTIVITY)!=null) {
@@ -95,30 +87,21 @@ public class MainActivity extends ActionBarActivity {
         else{
             mLoginChoice = AppConstants.LOGIN_CHOICE_PARSE;
             Log.d(TAG, "Current User:"+ currentUser.getUsername());
-//            if (BuildConfig.DEBUG) {
-//                Utils.enableStrictMode();
-//            }
 
-            //loadMoments();
             String tag = ImageGridFragment.class.getSimpleName();
+
+            //Bring the moment
             Fragment fr = getSupportFragmentManager().findFragmentByTag(tag);
             if (fr == null) {
                 fr = new ImageGridFragment();
             }
-            setTitle("Hola");
+            setTitle("Happy Moments");
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fr, tag).commit();
         }
     }
 
     @Override
     protected void onPause() {
-//        int count = mGridView.getCount();
-//        for (int i = 0; i < count; i++) {
-//            ImageView v = (ImageView) mGridView.getChildAt(i);
-//            if (v != null) {
-//                if (v.getDrawable() != null) v.getDrawable().setCallback(null);
-//            }
-//        }
         super.onPause();
     }
 
@@ -152,12 +135,6 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    protected AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        }
-    };
 
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);

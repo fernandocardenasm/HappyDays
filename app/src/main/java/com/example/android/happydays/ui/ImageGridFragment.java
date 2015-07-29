@@ -1,18 +1,23 @@
 package com.example.android.happydays.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.happydays.AppConstants;
+import com.example.android.happydays.MomentActivity;
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -34,12 +39,50 @@ import java.util.List;
  */
 public class ImageGridFragment extends AbsListViewBaseFragment {
     public static final int INDEX = 1;
+    private TextView mEmptyTextView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ImageButton addMomentButton;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
-        listView = (GridView) rootView.findViewById(R.id.gridView);
 
+        //Add Moment
+        addMomentButton = (ImageButton) rootView.findViewById(R.id.addButton);
+
+        addMomentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MomentActivity.class);
+                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
+                startActivity(intent);
+            }
+        });
+
+        //Empty view to show when no moments are created
+        mEmptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
+        listView = (GridView) rootView.findViewById(R.id.gridView);
+        listView.setEmptyView(mEmptyTextView);
+
+        //Allow to reload the moments
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(mOnRefresherListener);
+        mSwipeRefreshLayout.setColorSchemeColors(
+                R.color.swipeRefresh1,
+                R.color.swipeRefresh2,
+                R.color.swipeRefresh3,
+                R.color.swipeRefresh4
+        );
+
+        loadMoments();
+
+
+        return rootView;
+    }
+
+    //Load the list of moments from Parse
+    private void loadMoments() {
         ParseQuery<ParseObject> query = new ParseQuery<>(ParseConstants.CLASS_MOMENTS);
         query.whereEqualTo(ParseConstants.KEY_SENDER_ID, ParseUser.getCurrentUser().getObjectId());
         query.addAscendingOrder(ParseConstants.KEY_CREATED_AT);
@@ -49,31 +92,9 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
 
                 //Validating if the SwipeRefresher is being used
 
-//                if (mSwipeRefreshLayout.isRefreshing()){
-//                    mSwipeRefreshLayout.setRefreshing(false);
-//                }
-//
-//                if (e == null){
-//                    //We found moments
-//                    mMoments = moments;
-//                    if (mGridView.getAdapter() == null){
-//                        GridViewAdapter mGridViewAdapter = new GridViewAdapter(MainActivity.this, R.layout.grid_item_layout, moments);
-//                        mGridView.setAdapter(mGridViewAdapter);
-//                    }
-//                    else{
-//                        ((GridViewAdapter)mGridView.getAdapter()).refill(mMoments);
-//                    }
-//                    mGridView.setOnItemClickListener(mOnItemClickListener);
-//                }
-
-                int i = 0;
-//                String[] momentsArray = new String[moments.size()];
-//                for (i = 0; i < moments.size(); i++){
-//                    ParseObject moment = moments.get(i);
-//                    ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
-//                    momentsArray[i] = Uri.parse(file.getUrl()).toString();
-//                    Log.d("Link", "moment:" + momentsArray[i]);
-//                }
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
 
                 if (e == null){
                     ((GridView) listView).setAdapter(new ImageAdapter(getActivity(),moments));
@@ -86,10 +107,14 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
                 }
             }
         });
-
-
-        return rootView;
     }
+
+    protected SwipeRefreshLayout.OnRefreshListener mOnRefresherListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            loadMoments();
+        }
+    };
 
     private static class ImageAdapter extends BaseAdapter {
 
@@ -146,7 +171,10 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
                 holder = (ViewHolder) view.getTag();
             }
 
+            //Get one moment
             ParseObject moment = mMoments.get(position);
+
+            //Convert the Parse file to a string
             ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
             String uriFile = Uri.parse(file.getUrl()).toString();
 

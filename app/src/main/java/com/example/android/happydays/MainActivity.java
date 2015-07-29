@@ -36,7 +36,7 @@ public class MainActivity extends ActionBarActivity {
     private List<ParseObject> mMoments;
     private GridView mGridView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    TextView mEmptyTextView;
+    private TextView mEmptyTextView;
     ParseUser currentUser;
 
     @Override
