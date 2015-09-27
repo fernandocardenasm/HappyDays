@@ -28,6 +28,8 @@ public abstract class AbsListViewBaseFragment extends BaseFragment {
         applyScrollListener();
     }
 
+
+
 //    @Override
 //    public void onPrepareOptionsMenu(Menu menu) {
 //        MenuItem pauseOnScrollItem = menu.findItem(R.id.item_pause_on_scroll);

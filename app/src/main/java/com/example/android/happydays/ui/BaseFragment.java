@@ -14,6 +14,7 @@ public abstract class BaseFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        inflater.inflate(R.menu.menu_main, menu);
 //    }

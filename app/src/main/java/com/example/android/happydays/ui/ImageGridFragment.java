@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -43,6 +44,7 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
     private ImageButton addMomentButton;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
@@ -63,6 +65,38 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
         mEmptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
         listView = (GridView) rootView.findViewById(R.id.gridView);
         listView.setEmptyView(mEmptyTextView);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ParseObject moment = (ParseObject) parent.getAdapter().getItem(position);
+                String momentText = moment.getString(ParseConstants.KEY_MOMENT_TEXT);
+                String momentId = moment.getObjectId();
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+
+                ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
+                Uri fileUri = Uri.parse(file.getUrl());
+
+                intent.setData(fileUri);
+                intent.putExtra(ParseConstants.KEY_OBJECT_ID, momentId);
+                intent.putExtra(ParseConstants.KEY_MOMENT_TEXT, momentText);
+
+                startActivity(intent);
+
+
+
+                //Get the Uri of the file that is in the back-end
+//                ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
+
+
+//                Uri fileUri = Uri.parse(file.getUrl());
+                
+
+//
+
+            }
+        });
 
         //Allow to reload the moments
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
@@ -91,12 +125,12 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
 
                 //Validating if the SwipeRefresher is being used
 
-                if (mSwipeRefreshLayout.isRefreshing()){
+                if (mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
 
-                if (e == null){
-                    ((GridView) listView).setAdapter(new ImageAdapter(getActivity(),moments));
+                if (e == null) {
+                    ((GridView) listView).setAdapter(new ImageAdapter(getActivity(), moments));
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -115,6 +149,8 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
         }
     };
 
+
+
     private static class ImageAdapter extends BaseAdapter {
 
         private List<ParseObject> mMoments;
@@ -122,6 +158,7 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
         private LayoutInflater inflater;
 
         private DisplayImageOptions options;
+
 
 
         ImageAdapter(Context context, List<ParseObject> moments) {
@@ -145,8 +182,8 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public ParseObject getItem(int position) {
+            return mMoments.get(position);
         }
 
         @Override
@@ -185,7 +222,6 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
             }
 
 //                    momentsArray[i] = Uri.parse(file.getUrl()).toString();
-
             ImageLoader.getInstance()
                     .displayImage(uriFile, holder.imageView, options, new SimpleImageLoadingListener() {
                         @Override
@@ -212,6 +248,8 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
 
             return view;
         }
+
+
     }
 
     static class ViewHolder {

@@ -53,12 +53,20 @@
 
         <activity
             android:name=".ui.MomentActivity"
-            android:label="@string/title_activity_moment"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_moment"
             android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".ui.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.happydays.ui.MainActivity" />
         </activity>
     </application>
 
