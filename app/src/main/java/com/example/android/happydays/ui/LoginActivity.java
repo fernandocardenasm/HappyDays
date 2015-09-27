@@ -1,4 +1,4 @@
-package com.example.android.happydays;
+package com.example.android.happydays.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,7 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.example.android.happydays.ui.MainActivity;
+import com.example.android.happydays.AlertDialogGenerator;
+import com.example.android.happydays.AppConstants;
+import com.example.android.happydays.FaceBookConstants;
+import com.example.android.happydays.HappyDaysApplication;
+import com.example.android.happydays.ParseConstants;
+import com.example.android.happydays.R;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;

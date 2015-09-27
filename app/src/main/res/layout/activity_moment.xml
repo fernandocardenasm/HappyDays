@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                tools:context="com.example.android.happydays.MomentActivity">
+                tools:context="com.example.android.happydays.ui.MomentActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

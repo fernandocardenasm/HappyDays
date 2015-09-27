@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.android.happydays.AppConstants;
-import com.example.android.happydays.LoginActivity;
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.facebook.FacebookSdk;

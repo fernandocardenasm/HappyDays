@@ -1,9 +1,11 @@
-package com.example.android.happydays;
+package com.example.android.happydays.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.android.happydays.ParseConstants;
 
 import org.apache.commons.io.IOUtils;
 

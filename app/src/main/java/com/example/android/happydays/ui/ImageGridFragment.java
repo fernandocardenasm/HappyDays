@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.happydays.AppConstants;
-import com.example.android.happydays.MomentActivity;
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;

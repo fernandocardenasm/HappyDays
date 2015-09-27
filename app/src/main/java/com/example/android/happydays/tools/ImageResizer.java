@@ -1,4 +1,4 @@
-package com.example.android.happydays;
+package com.example.android.happydays.tools;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

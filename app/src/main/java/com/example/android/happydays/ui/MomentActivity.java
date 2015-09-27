@@ -1,4 +1,4 @@
-package com.example.android.happydays;
+package com.example.android.happydays.ui;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -20,7 +20,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.android.happydays.ui.MainActivity;
+import com.example.android.happydays.AlertDialogGenerator;
+import com.example.android.happydays.AppConstants;
+import com.example.android.happydays.tools.FileHelper;
+import com.example.android.happydays.ParseConstants;
+import com.example.android.happydays.R;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
