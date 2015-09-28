@@ -221,10 +221,10 @@ public class MomentActivity extends ActionBarActivity {
                 if (e == null){
                         progressDialog.dismiss();
                         Intent intent = new Intent(MomentActivity.this, MainActivity.class);
-                        intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.MOMENT_ACTIVITY);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                    intent.putExtra(AppConstants.NAME_ACTIVITY, AppConstants.MOMENT_ACTIVITY);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 }
                 else{
                     AlertDialogGenerator dialog = new AlertDialogGenerator();

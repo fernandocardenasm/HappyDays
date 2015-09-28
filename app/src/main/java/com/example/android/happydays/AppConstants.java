@@ -6,6 +6,7 @@ package com.example.android.happydays;
 public final class AppConstants {
     public static final String NAME_ACTIVITY = "NAME_ACTIVITY";
     public static final String MOMENT_ACTIVITY = "MOMENT_ACTIVITY";
+    public static final String DETAIL_ACTIVITY = "DETAIL_ACTIVITY";
     public static final String LOGIN_ACTIVITY = "LOGIN_ACTIVITY";
     public static final String SIGNUP_ACTIVITY = "SIGNUP_ACTIVITY";
     public static final String LOGIN_CHOICE_FACEBOOK = "FACEBOOK";

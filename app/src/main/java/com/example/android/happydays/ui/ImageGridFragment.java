@@ -75,29 +75,15 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
 
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
 
-//                ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
-//                Uri fileUri = Uri.parse(file.getUrl());
-
                 view.findViewById(R.id.image).setDrawingCacheEnabled(true);
-                Bitmap b=view.findViewById(R.id.image).getDrawingCache();
+                Bitmap bitmap=view.findViewById(R.id.image).getDrawingCache();
                 //Cleanup
-                intent.putExtra("Bitmap", b);
-
-
-
-//                intent.setData(fileUri);
+                intent.putExtra("Bitmap", bitmap);
+                intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
                 intent.putExtra(ParseConstants.KEY_OBJECT_ID, momentId);
                 intent.putExtra(ParseConstants.KEY_MOMENT_TEXT, momentText);
 //
                 startActivity(intent);
-
-
-
-                //Get the Uri of the file that is in the back-end
-//                ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
-
-
-//                Uri fileUri = Uri.parse(file.getUrl());
 
 
 //
