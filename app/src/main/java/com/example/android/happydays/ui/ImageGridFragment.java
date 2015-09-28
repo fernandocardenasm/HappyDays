@@ -75,13 +75,20 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
 
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
 
-                ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
-                Uri fileUri = Uri.parse(file.getUrl());
+//                ParseFile file = moment.getParseFile(ParseConstants.KEY_FILE);
+//                Uri fileUri = Uri.parse(file.getUrl());
 
-                intent.setData(fileUri);
+                view.findViewById(R.id.image).setDrawingCacheEnabled(true);
+                Bitmap b=view.findViewById(R.id.image).getDrawingCache();
+                //Cleanup
+                intent.putExtra("Bitmap", b);
+
+
+
+//                intent.setData(fileUri);
                 intent.putExtra(ParseConstants.KEY_OBJECT_ID, momentId);
                 intent.putExtra(ParseConstants.KEY_MOMENT_TEXT, momentText);
-
+//
                 startActivity(intent);
 
 
@@ -91,7 +98,7 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
 
 
 //                Uri fileUri = Uri.parse(file.getUrl());
-                
+
 
 //
 

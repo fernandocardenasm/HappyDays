@@ -1,7 +1,7 @@
 package com.example.android.happydays.ui;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -13,8 +13,6 @@ import android.widget.ProgressBar;
 
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends ActionBarActivity {
 
@@ -33,7 +31,7 @@ public class DetailActivity extends ActionBarActivity {
         mImageView = (ImageView) findViewById(R.id.momentImage);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
 
         mCancelButton = (Button) findViewById(R.id.cancelMomentButton);
 
@@ -45,30 +43,32 @@ public class DetailActivity extends ActionBarActivity {
         });
 
         Intent intent = getIntent();
-        Uri imageUri = intent.getData();
+//        Uri imageUri = intent.getData();
 
         fillValueForm(intent.getStringExtra(ParseConstants.KEY_MOMENT_TEXT));
-        Picasso.with(this).load(imageUri.toString()).into(mImageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-
-            @Override
-            public void onError() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-        });
+        Bitmap bitmap = (Bitmap) intent.getParcelableExtra("Bitmap");
+        mImageView.setImageBitmap(bitmap);
+//        Picasso.with(this).load(imageUri.toString()).into(mImageView, new Callback() {
+//            @Override
+//            public void onSuccess() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mProgressBar.setVisibility(View.INVISIBLE);
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onError() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mProgressBar.setVisibility(View.INVISIBLE);
+//                    }
+//                });
+//            }
+//        });
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
