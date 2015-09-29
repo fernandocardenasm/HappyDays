@@ -44,9 +44,11 @@ public class ShareImageFacebookActivity extends ActionBarActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(ShareImageFacebookActivity.this, "You shared your moment on FB!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ShareImageFacebookActivity.this, "You shared your moment on FB!", Toast.LENGTH_SHORT).show();
                     }
                 });
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 Intent mIntent = new Intent(ShareImageFacebookActivity.this, MainActivity.class);
                 startActivity(mIntent);
             }
@@ -60,10 +62,13 @@ public class ShareImageFacebookActivity extends ActionBarActivity {
                     }
                 });
                 Intent mIntent = new Intent(ShareImageFacebookActivity.this, DetailActivity.class);
+
                 mIntent.putExtra(ParseConstants.KEY_MOMENT_TEXT, momentText);
                 mIntent.putExtra(ParseConstants.BITMAP_IMAGE_MOMENT, bitmap);
                 mIntent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
                 mIntent.putExtra(ParseConstants.KEY_OBJECT_ID, mObjectId);
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mIntent);
             }
 
@@ -76,6 +81,8 @@ public class ShareImageFacebookActivity extends ActionBarActivity {
                     }
                 });
                 Intent mIntent = new Intent(ShareImageFacebookActivity.this, DetailActivity.class);
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mIntent);
             }
         });
