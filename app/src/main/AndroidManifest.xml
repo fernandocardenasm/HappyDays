@@ -51,6 +51,11 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1486630454961586"
+            android:exported="true" />
+
         <activity
             android:name=".ui.MomentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -67,6 +72,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.happydays.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.ShareImageFacebookActivity"
+            android:label="@string/title_activity_share_image_facebook"
+            android:parentActivityName=".ui.DetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.happydays.ui.DetailActivity" />
         </activity>
     </application>
 

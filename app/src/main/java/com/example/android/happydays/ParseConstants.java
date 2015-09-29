@@ -23,6 +23,7 @@ public final class ParseConstants {
     public static final String EMPTY_FIELD = "empty";
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String PARSE_URL_IMAGE = "urlImages";
+    public static final String BITMAP_IMAGE_MOMENT = "bitmap";
 
     //Facebook
     public static final int CLICK_FACEBOOK_LOGIN = 1;

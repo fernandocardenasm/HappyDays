@@ -27,9 +27,12 @@ import com.example.android.happydays.AppConstants;
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.example.android.happydays.tools.FileHelper;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -62,6 +65,12 @@ public class DetailActivity extends ActionBarActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int PICK_PHOTO_REQUEST = 2;
     public static final int MEDIA_TYPE_IMAGE = 3;
+
+    Bitmap bitmap;
+
+    ShareButton shareButton;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +106,7 @@ public class DetailActivity extends ActionBarActivity {
 
         //Load the moment values in the form
         fillValueForm(momentText);
-        Bitmap bitmap = (Bitmap) intent.getParcelableExtra("Bitmap");
+        bitmap = (Bitmap) intent.getParcelableExtra(ParseConstants.BITMAP_IMAGE_MOMENT);
         mImageView.setImageBitmap(bitmap);
 
         //Save moment
@@ -143,6 +152,21 @@ public class DetailActivity extends ActionBarActivity {
             }
         });
 
+//        shareButton = (ShareButton) findViewById(R.id.buttonFacebook);
+//        shareButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bitmap image = bitmap;
+//                SharePhoto photo = new SharePhoto.Builder()
+//                        .setBitmap(image)
+//                        .build();
+//                SharePhotoContent content = new SharePhotoContent.Builder()
+//                        .addPhoto(photo)
+//                        .build();
+//                shareButton.setShareContent(content);
+//            }
+//        });
+
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -154,6 +178,13 @@ public class DetailActivity extends ActionBarActivity {
         return true;
     }
 
+//    SharePhoto photo = new SharePhoto.Builder()
+//            .setBitmap(image)
+//            .build();
+//    SharePhotoContent content = new SharePhotoContent.Builder()
+//            .addPhoto(photo)
+//            .build();
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -161,11 +192,18 @@ public class DetailActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_share) {
-            return true;
+            Intent intent = new Intent(DetailActivity.this, ShareImageFacebookActivity.class);
+            intent.putExtra(ParseConstants.KEY_MOMENT_TEXT, mMomentText.getText().toString());
+            intent.putExtra(ParseConstants.BITMAP_IMAGE_MOMENT, bitmap);
+            intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
+            intent.putExtra(ParseConstants.KEY_OBJECT_ID, mObjectId);
+            startActivity(intent);
         }
         else if (id == R.id.action_delete){
+
             AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
             builder.setMessage("Are you sure you want to delete the moment?")
                     .setTitle("Warning!")
@@ -255,7 +293,7 @@ public class DetailActivity extends ActionBarActivity {
     //Show the user's taken image in the layout
     public void showImageInActivity(Uri uri){
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             mImageView.setImageBitmap(bitmap);
         } catch (IOException e) {
             e.printStackTrace();

@@ -78,15 +78,12 @@ public class ImageGridFragment extends AbsListViewBaseFragment {
                 view.findViewById(R.id.image).setDrawingCacheEnabled(true);
                 Bitmap bitmap=view.findViewById(R.id.image).getDrawingCache();
                 //Cleanup
-                intent.putExtra("Bitmap", bitmap);
+                intent.putExtra(ParseConstants.BITMAP_IMAGE_MOMENT, bitmap);
                 intent.putExtra(AppConstants.LOGIN_CHOICE, AppConstants.LOGIN_CHOICE_PARSE);
                 intent.putExtra(ParseConstants.KEY_OBJECT_ID, momentId);
                 intent.putExtra(ParseConstants.KEY_MOMENT_TEXT, momentText);
 //
                 startActivity(intent);
-
-
-//
 
             }
         });
