@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import com.example.android.happydays.AppConstants;
 import com.example.android.happydays.ParseConstants;
 import com.example.android.happydays.R;
 import com.example.android.happydays.tools.FileHelper;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -52,6 +55,7 @@ public class DetailActivity extends ActionBarActivity {
     protected Button mSaveButton;
     protected ProgressBar mProgressBar;
     protected String mLoginChoice;
+    protected String mObjectId;
     ProgressDialog progressDialog;
 
     protected Uri mMediaUri;
@@ -86,7 +90,7 @@ public class DetailActivity extends ActionBarActivity {
         mLoginChoice = intent.getStringExtra(AppConstants.LOGIN_CHOICE);
 //        Uri imageUri = intent.getData();
         final String momentText = intent.getStringExtra(ParseConstants.KEY_MOMENT_TEXT);
-        final String objectId = intent.getStringExtra(ParseConstants.KEY_OBJECT_ID);
+        mObjectId = intent.getStringExtra(ParseConstants.KEY_OBJECT_ID);
 
         //If mMediaUri is null, the user didnt upload a new picture
         mMediaUri = null;
@@ -111,12 +115,12 @@ public class DetailActivity extends ActionBarActivity {
                             }
                             else{
                                 mSaveButton.setEnabled(false);
-                                updateMomentLogInParse(ParseConstants.MOMENT_TEXT_EMPTY, objectId);
+                                updateMomentLogInParse(ParseConstants.MOMENT_TEXT_EMPTY, mObjectId);
                             }
                         }
                         else{
                             mSaveButton.setEnabled(false);
-                            updateMomentLogInParse(mMomentText.getText().toString(), objectId);
+                            updateMomentLogInParse(mMomentText.getText().toString(), mObjectId);
                         }
                     }
 
@@ -141,6 +145,42 @@ public class DetailActivity extends ActionBarActivity {
 
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_share) {
+            return true;
+        }
+        else if (id == R.id.action_delete){
+            AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+            builder.setMessage("Are you sure you want to delete the moment?")
+                    .setTitle("Warning!")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteMomentParse(mObjectId);
+                        }
+                    }).setNegativeButton("Cancel",null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //Dialogs buttons listeners
@@ -407,6 +447,37 @@ public class DetailActivity extends ActionBarActivity {
         else{
             return false;
         }
+    }
+
+    //Delete the moment
+
+    private void deleteMomentParse(String objectId){
+        ParseObject.createWithoutData(ParseConstants.CLASS_MOMENTS, objectId).deleteEventually(new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                Intent intent = new Intent(DetailActivity.this, MainActivity.class);
+                if (e==null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(DetailActivity.this, "Moment deleted successfully!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else{
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(DetailActivity.this, "Unfortunately the moment could not be deleted. Please try again!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
+            }
+        });
     }
 
     class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
