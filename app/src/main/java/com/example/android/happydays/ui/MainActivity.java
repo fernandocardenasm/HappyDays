@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        setTitle("Happy Moments");
 //        setContentView(R.layout.activity_main);
 //        ButterKnife.inject(this);
 //

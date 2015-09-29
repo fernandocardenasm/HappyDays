@@ -25,6 +25,8 @@ public class ShareImageFacebookActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        setTitle("Loading Facebook");
+
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
 

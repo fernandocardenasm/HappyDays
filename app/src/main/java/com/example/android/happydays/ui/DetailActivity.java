@@ -77,6 +77,7 @@ public class DetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Your Moment");
 
         mMomentText = (EditText) findViewById(R.id.momentText);
         mImageView = (ImageView) findViewById(R.id.momentImage);

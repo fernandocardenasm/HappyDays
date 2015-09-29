@@ -63,6 +63,7 @@ public class MomentActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moment);
         ButterKnife.inject(this);
+        setTitle("New Moment");
 
         Intent intent = getIntent();
         mLoginChoice = intent.getStringExtra(AppConstants.LOGIN_CHOICE);
