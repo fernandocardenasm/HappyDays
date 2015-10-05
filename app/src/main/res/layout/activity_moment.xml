@@ -3,7 +3,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                tools:context="com.example.android.happydays.ui.MomentActivity">
+                tools:context="com.example.android.happydays.ui.MomentActivity"
+              android:background="#FFF450">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,7 +46,9 @@
             android:id="@+id/cancelMomentButton"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"/>
+            android:layout_marginStart="16dp"
+            android:background="#fc7c05"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -54,7 +57,9 @@
             android:id="@+id/saveMomentButton"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+            android:background="#fc7c05"
+            android:textColor="#FFFFFF"/>
     </RelativeLayout>
 
 
